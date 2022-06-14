@@ -2,23 +2,20 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:catcher/catcher.dart';
 import 'package:catcher/core/application_profile_manager.dart';
 import 'package:catcher/core/catcher_screenshot_manager.dart';
-import 'package:catcher/mode/report_mode_action_confirmed.dart';
-import 'package:catcher/model/application_profile.dart';
-import 'package:catcher/model/catcher_options.dart';
-import 'package:catcher/model/localization_options.dart';
 import 'package:catcher/model/platform_type.dart';
-import 'package:catcher/model/report.dart';
-import 'package:catcher/model/report_handler.dart';
-import 'package:catcher/model/report_mode.dart';
 import 'package:catcher/utils/catcher_error_widget.dart';
-import 'package:catcher/utils/catcher_logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqlite_api.dart';
+
+import 'db_service.dart';
+
+const _uri = "http://athmany.tech/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log";
 
 class AthmanyCatcher with ReportModeAction {
   static late AthmanyCatcher _instance;
@@ -28,6 +25,8 @@ class AthmanyCatcher with ReportModeAction {
   final Widget? rootWidget;
 
   final Database database;
+
+  late DBService _dbService;
 
   ///Run app function which will be ran
   final void Function()? runAppFunction;
@@ -81,6 +80,7 @@ class AthmanyCatcher with ReportModeAction {
 
   void _configure(GlobalKey<NavigatorState>? navigatorKey) {
     _instance = this;
+    _dbService = DBService(database);
     _configureNavigatorKey(navigatorKey);
     _setupCurrentConfig();
     _configureLogger();
@@ -110,35 +110,10 @@ class AthmanyCatcher with ReportModeAction {
   }
 
   void _setupCurrentConfig() {
-    switch (ApplicationProfileManager.getApplicationProfile()) {
-      case ApplicationProfile.release:
-        {
-          if (releaseConfig != null) {
-            _currentConfig = releaseConfig!;
-          } else {
-            _currentConfig = CatcherOptions.getDefaultReleaseOptions();
-          }
-          break;
-        }
-      case ApplicationProfile.debug:
-        {
-          if (debugConfig != null) {
-            _currentConfig = debugConfig!;
-          } else {
-            _currentConfig = CatcherOptions.getDefaultDebugOptions();
-          }
-          break;
-        }
-      case ApplicationProfile.profile:
-        {
-          if (profileConfig != null) {
-            _currentConfig = profileConfig!;
-          } else {
-            _currentConfig = CatcherOptions.getDefaultProfileOptions();
-          }
-          break;
-        }
-    }
+    _currentConfig = CatcherOptions(
+      SilentReportMode(),
+      [HttpHandler(HttpRequestType.post, Uri.parse(_uri), _dbService)],
+    );
   }
 
   ///Update config after initialization
