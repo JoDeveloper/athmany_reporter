@@ -11,11 +11,12 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 import 'db_service.dart';
 
-const _uri = "http://athmany.tech/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log";
+const _uri = "/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log";
 // const _uri = "https://athmany.requestcatcher.com/test";
 
 class AthmanyCatcher with ReportModeAction {
@@ -110,12 +111,18 @@ class AthmanyCatcher with ReportModeAction {
     }
   }
 
-  void _setupCurrentConfig() {
+  Future<String?> _getSavedBaseUrl() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.get('base_url') as String;
+  }
+
+  void _setupCurrentConfig() async {
+    final baseUrl = await _getSavedBaseUrl();
     _currentConfig = CatcherOptions(
       SilentReportMode(),
       [
         ConsoleHandler(),
-        HttpHandler(HttpRequestType.post, Uri.parse(_uri), _dbService),
+        HttpHandler(HttpRequestType.post, Uri.parse(baseUrl! + _uri), _dbService),
       ],
     );
   }
