@@ -11,7 +11,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 import 'db_service.dart';
@@ -80,7 +79,7 @@ class AthmanyCatcher with ReportModeAction {
     _configure(navigatorKey);
   }
 
-  void _configure(GlobalKey<NavigatorState>? navigatorKey) {
+  void _configure(GlobalKey<NavigatorState>? navigatorKey) async {
     _instance = this;
     _dbService = DBService(database);
     _configureNavigatorKey(navigatorKey);
@@ -111,18 +110,12 @@ class AthmanyCatcher with ReportModeAction {
     }
   }
 
-  Future<String?> _getSavedBaseUrl() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.get('base_url') as String;
-  }
-
-  void _setupCurrentConfig() async {
-    final baseUrl = await _getSavedBaseUrl();
+  Future<void> _setupCurrentConfig() async {
     _currentConfig = CatcherOptions(
       SilentReportMode(),
       [
         ConsoleHandler(),
-        HttpHandler(HttpRequestType.post, Uri.parse(baseUrl! + _uri), _dbService),
+        HttpHandler(HttpRequestType.post, Uri.parse(_uri), _dbService),
       ],
     );
   }
