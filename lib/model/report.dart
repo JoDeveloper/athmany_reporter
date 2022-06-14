@@ -66,6 +66,7 @@ class Report {
     }
     if (enableStackTrace) {
       json["stackTrace"] = stackTrace.toString();
+      json['method'] = stackTrace.toString().split('\n')[0];
     }
     if (enableCustomParameters) {
       json["customParameters"] = customParameters;

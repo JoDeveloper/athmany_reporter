@@ -66,7 +66,7 @@ class HttpHandler extends ReportHandler {
         enableCustomParameters: enableCustomParameters,
       );
       final request = {
-        "method": "ddd",
+        "method": json['method'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
         "error": convert.json.encode(json),
