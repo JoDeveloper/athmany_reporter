@@ -50,6 +50,7 @@ class HttpHandler extends ReportHandler {
     }
 
     if (requestType == HttpRequestType.post) {
+      _printLog("Posting to ${endpointUri.toString()}");
       return _sendPost(error);
     }
     return true;
@@ -100,6 +101,7 @@ class HttpHandler extends ReportHandler {
           options: options,
         );
       }
+      _printLog("Response: ${response.statusCode}");
       _printLog(
         "HttpHandler response status: ${response.statusCode!} body: ${response.data!}",
       );
