@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, unnecessary_null_comparison
+// ignore_for_file: depend_on_referenced_packages
 
 import 'dart:async';
 import 'dart:developer';
@@ -7,7 +7,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-late Database db;
+Database? db;
 
 class DBService {
   // init database
@@ -60,7 +60,7 @@ class DBService {
       await initDatabase();
     }
     const sql = '''SELECT * FROM company_details''';
-    final data = await db.rawQuery(sql);
+    final data = await db!.rawQuery(sql);
     log(data[0].toString(), name: 'company details');
     return data[0];
   }
