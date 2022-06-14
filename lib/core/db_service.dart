@@ -39,8 +39,13 @@ class DBService {
 
   Future<Map> getCompanyDetails() async {
     const sql = '''SELECT * FROM company_details''';
-    final data = await db.rawQuery(sql);
-    log(data[0].toString(), name: 'company details');
-    return data[0];
+    try {
+      final data = await db.rawQuery(sql);
+      log(data[0].toString(), name: 'company details');
+      return data[0];
+    } on Exception catch (e) {
+      log(e.toString());
+    }
+    return {};
   }
 }
