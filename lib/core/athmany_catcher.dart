@@ -73,18 +73,10 @@ class AthmanyCatcher with ReportModeAction {
     _configure(navigatorKey);
   }
 
-  void _configure(GlobalKey<NavigatorState>? navigatorKey) async {
+  void _configure(GlobalKey<NavigatorState>? navigatorKey) {
     _instance = this;
+    _currentConfig = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
     _dbService = DBService();
-    final companyDetails = await _dbService.getCompanyDetails();
-    _currentConfig = CatcherOptions(
-      SilentReportMode(),
-      [
-        HttpHandler(HttpRequestType.post, Uri.parse("http://athmany.tech/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log"),
-            printLogs: true, customParameters: companyDetails as Map<String, dynamic>),
-        ConsoleHandler(),
-      ],
-    );
     _configureNavigatorKey(navigatorKey);
     _configureLogger();
     _setupErrorHooks();
