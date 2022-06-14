@@ -59,11 +59,12 @@ class HttpHandler extends ReportHandler {
   Future<bool> _sendPost(Report report) async {
     try {
       final profile = await dbService.getProfileDetails();
-      final endPoint = await dbService.getSavedBaseUrl();
+      // final endPoint = await dbService.getSavedBaseUrl();
       _dio.interceptors.add(
         QueuedInterceptorsWrapper(
           onRequest: (options, handler) async {
             final sessionId = await dbService.getSessionId();
+            _printLog("Session id: $sessionId");
             options.headers["cookie"] = sessionId;
             options.headers['accept'] = 'application/json';
             return handler.next(options);
@@ -108,13 +109,13 @@ class HttpHandler extends ReportHandler {
         final screenshotPath = report.screenshot?.path ?? "";
         final FormData formData = FormData.fromMap(<String, dynamic>{"payload_json": json, "file": await MultipartFile.fromFile(screenshotPath)});
         response = await _dio.post<dynamic>(
-          Uri.parse(endPoint!).toString(),
+          (endpointUri).toString(),
           data: formData,
           options: options,
         );
       } else {
         response = await _dio.post<dynamic>(
-          Uri.parse(endPoint!).toString(),
+          endpointUri.toString(),
           data: request,
           options: options,
         );
