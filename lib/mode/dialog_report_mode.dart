@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:catcher/model/platform_type.dart';
 import 'package:catcher/model/report.dart';
 import 'package:catcher/model/report_mode.dart';

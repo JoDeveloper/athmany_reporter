@@ -30,13 +30,13 @@ class FileHandler extends ReportHandler {
   });
 
   @override
-  Future<bool> handle(Report report, BuildContext? context) async {
+  Future<bool> handle(Report error, BuildContext? context) async {
     try {
       if (!_fileValidated) {
         _fileValidationResult = await _checkFile();
         _fileValidated = true;
       }
-      return await _processReport(report);
+      return await _processReport(error);
     } catch (exc, stackTrace) {
       _printLog("Exception occurred: $exc stack: $stackTrace");
       return false;

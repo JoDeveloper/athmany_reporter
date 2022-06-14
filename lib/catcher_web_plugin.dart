@@ -1,4 +1,7 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
