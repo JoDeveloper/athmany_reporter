@@ -56,8 +56,6 @@ class HttpHandler extends ReportHandler {
   Future<bool> _sendPost(Report report) async {
     try {
       final profile = await dbService.getProfileDetails();
-      final baseUrl = await dbService.getSavedBaseUrl();
-      final endpointUri = Uri.parse(baseUrl!);
       final json = report.toJson(
         enableDeviceParameters: enableDeviceParameters,
         enableApplicationParameters: enableApplicationParameters,
