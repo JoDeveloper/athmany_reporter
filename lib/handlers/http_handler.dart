@@ -10,6 +10,8 @@ import 'package:catcher/utils/catcher_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+const _uri = "/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log";
+
 class HttpHandler extends ReportHandler {
   final Dio dio;
   final HttpRequestType requestType;
@@ -54,7 +56,6 @@ class HttpHandler extends ReportHandler {
 
   Future<bool> _sendPost(Report report) async {
     try {
-      final endpointUri = '';
       final profile = await dbService.getProfileDetails();
 
       final json = report.toJson(
@@ -80,21 +81,8 @@ class HttpHandler extends ReportHandler {
       );
 
       Response? response;
-      _printLog("Calling: ${endpointUri.toString()}");
-      if (report.screenshot != null) {
-        final screenshotPath = report.screenshot?.path ?? "";
-        final FormData formData = FormData.fromMap(<String, dynamic>{"payload_json": json, "file": await MultipartFile.fromFile(screenshotPath)});
-        response = await dio.post<dynamic>(
-          (endpointUri).toString(),
-          data: formData,
-          options: options,
-        );
-      } else {
-        response = await dio.post<dynamic>(
-          endpointUri.toString(),
-          data: request,
-          options: options,
-        );
+      {
+        response = await dio.post(_uri, data: request, options: options);
       }
       _printLog(
         "HttpHandler response status: ${response.statusCode!} body: ${response.data!}",
