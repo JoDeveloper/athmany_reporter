@@ -76,6 +76,7 @@ class AthmanyCatcher with ReportModeAction {
   void _configure(GlobalKey<NavigatorState>? navigatorKey) {
     _instance = this;
     _currentConfig = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
+    _logger = CatcherLogger();
     _dbService = DBService();
     _configureNavigatorKey(navigatorKey);
     // _configureLogger();
