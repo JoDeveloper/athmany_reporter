@@ -8,11 +8,11 @@ class DBService {
 
   DBService(this.db);
 
-  Future<Map> getCompanyDetails() async {
-    const sql = '''SELECT * FROM company_details''';
+  Future<Map> getProfileDetails() async {
+    const sql = '''SELECT * FROM pos_profile_details''';
     try {
       final data = await db.rawQuery(sql);
-      log(data[0].toString(), name: 'company details');
+      log(data[0].toString(), name: 'profile details');
       return data[0];
     } on Exception catch (e) {
       log(e.toString());

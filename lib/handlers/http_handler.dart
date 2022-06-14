@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:catcher/core/db_service.dart';
 import 'package:catcher/model/http_request_type.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:catcher/model/report.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 
 class HttpHandler extends ReportHandler {
   final _dio = Dio();
-
+  final DBService _dbService;
   final HttpRequestType requestType;
   final Uri endpointUri;
   final Map<String, dynamic> headers;
@@ -25,7 +26,8 @@ class HttpHandler extends ReportHandler {
 
   HttpHandler(
     this.requestType,
-    this.endpointUri, {
+    this.endpointUri,
+    this._dbService, {
     Map<String, dynamic>? headers,
     this.requestTimeout = 5000,
     this.responseTimeout = 5000,
@@ -54,6 +56,7 @@ class HttpHandler extends ReportHandler {
   }
 
   Future<bool> _sendPost(Report report) async {
+    final data = await _dbService.getProfileDetails();
     try {
       final json = report.toJson(
         enableDeviceParameters: enableDeviceParameters,
@@ -63,8 +66,7 @@ class HttpHandler extends ReportHandler {
       );
       final request = {
         "method": "ddd",
-        "date_time": "2022-03-13 15:09:59",
-        "pos_profile": "بسطة جورمية GP BSTAH",
+        "pos_profile": data['name'],
         "error": json,
       };
       final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
@@ -82,7 +84,10 @@ class HttpHandler extends ReportHandler {
       _printLog("Calling: ${endpointUri.toString()}");
       if (report.screenshot != null) {
         final screenshotPath = report.screenshot?.path ?? "";
-        final FormData formData = FormData.fromMap(<String, dynamic>{"payload_json": json, "file": await MultipartFile.fromFile(screenshotPath)});
+        final FormData formData = FormData.fromMap(<String, dynamic>{
+          "payload_json": json,
+          "file": await MultipartFile.fromFile(screenshotPath),
+        });
         response = await _dio.post<dynamic>(
           endpointUri.toString(),
           data: formData,

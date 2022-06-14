@@ -24,6 +24,8 @@ import '../mode/silent_report_mode.dart';
 import '../model/http_request_type.dart';
 import 'db_service.dart';
 
+const _uri = "http://athmany.tech/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log";
+
 class AthmanyCatcher with ReportModeAction {
   static late AthmanyCatcher _instance;
   static GlobalKey<NavigatorState>? _navigatorKey;
@@ -76,9 +78,13 @@ class AthmanyCatcher with ReportModeAction {
 
   void _configure(GlobalKey<NavigatorState>? navigatorKey) {
     _instance = this;
-    _currentConfig = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
-    _logger = CatcherLogger();
     _dbService = DBService(databse);
+    _currentConfig = CatcherOptions(SilentReportMode(), [
+      ConsoleHandler(),
+      HttpHandler(HttpRequestType.post, Uri.parse(_uri), _dbService),
+    ]);
+    _logger = CatcherLogger();
+
     _configureNavigatorKey(navigatorKey);
     // _configureLogger();
     _setupErrorHooks();
@@ -109,17 +115,7 @@ class AthmanyCatcher with ReportModeAction {
   void _updateConfig({
     CatcherOptions? debugConfig,
   }) async {
-    final companyDetails = await _dbService.getCompanyDetails();
-    if (debugConfig != null) {
-      this.debugConfig = CatcherOptions(
-        SilentReportMode(),
-        [
-          HttpHandler(HttpRequestType.post, Uri.parse("http://athmany.tech/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log"),
-              printLogs: true, customParameters: companyDetails as Map<String, dynamic>),
-          ConsoleHandler(),
-        ],
-      );
-    }
+    if (debugConfig != null) {}
     _setupReportModeActionInReportMode();
     _setupScreenshotManager();
     _configureLogger();
