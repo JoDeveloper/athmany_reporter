@@ -20,3 +20,5 @@ export 'package:catcher/model/report_mode.dart';
 export 'package:catcher/model/toast_handler_gravity.dart';
 export 'package:catcher/model/toast_handler_length.dart';
 export 'package:catcher/utils/catcher_logger.dart';
+
+export 'core/athmany_reporter.dart';
