@@ -78,7 +78,7 @@ class AthmanyCatcher with ReportModeAction {
     _currentConfig = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
     _dbService = DBService();
     _configureNavigatorKey(navigatorKey);
-    _configureLogger();
+    // _configureLogger();
     _setupErrorHooks();
     _setupReportModeActionInReportMode();
     _setupScreenshotManager();
