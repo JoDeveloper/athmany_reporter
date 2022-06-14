@@ -13,22 +13,8 @@ class DBService {
   // init database
   Future<void> initDatabase() async {
     final path = await getDatabasePath('invoices_database');
-    db = await openDatabase(path, version: 1, onCreate: onCreate, onConfigure: onConfigure);
+    db = await openDatabase(path, version: 1);
     // log(db);
-  }
-
-  // database log
-  static void databaseLog(String functionName, String sql, [List<Map<String, dynamic>>? selectQueryResult, int? insertAndUpdateQueryResult, List<dynamic>? params]) {
-    log(functionName);
-    log(sql);
-    if (params != null) {
-      log(params.toString());
-    }
-    if (selectQueryResult != null) {
-      log(selectQueryResult.toString());
-    } else if (insertAndUpdateQueryResult != null) {
-      log(insertAndUpdateQueryResult.toString());
-    }
   }
 
   // get database path
@@ -39,6 +25,7 @@ class DBService {
 
     //make sure the folder exists
     if (await Directory(dirname(path)).exists()) {
+      log('dir exists');
     } else {
       await Directory(dirname(path)).create(recursive: true);
       log('dir created');
