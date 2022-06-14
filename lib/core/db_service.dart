@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, unnecessary_null_comparison
 
 import 'dart:async';
 import 'dart:developer';
@@ -39,8 +39,6 @@ class DBService {
 
     //make sure the folder exists
     if (await Directory(dirname(path)).exists()) {
-      // await FlutterSession().set('sid', '');
-      // await deleteDatabase(path);
     } else {
       await Directory(dirname(path)).create(recursive: true);
       log('dir created');
@@ -58,6 +56,9 @@ class DBService {
   Future<void> onCreate(Database db, int version) async {}
 
   Future<Map> getCompanyDetails() async {
+    if (db == null) {
+      await initDatabase();
+    }
     const sql = '''SELECT * FROM company_details''';
     final data = await db.rawQuery(sql);
     log(data[0].toString(), name: 'company details');
