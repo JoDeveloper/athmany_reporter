@@ -47,9 +47,6 @@ flutter:
         pluginClass: CatcherPlugin
       ios:
         pluginClass: CatcherPlugin
-      web:
-        pluginClass: CatcherWebPlugin
-        fileName: catcher_web_plugin.dart
       macos:
         pluginClass: CatcherPlugin
       windows:
