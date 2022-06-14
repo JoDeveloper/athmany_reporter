@@ -11,9 +11,9 @@ class ConsoleHandler extends ReportHandler {
   final bool handleWhenRejected;
 
   ConsoleHandler({
-    this.enableDeviceParameters = true,
-    this.enableApplicationParameters = true,
-    this.enableStackTrace = true,
+    this.enableDeviceParameters = false,
+    this.enableApplicationParameters = false,
+    this.enableStackTrace = false,
     this.enableCustomParameters = false,
     this.handleWhenRejected = false,
   });
@@ -21,9 +21,9 @@ class ConsoleHandler extends ReportHandler {
   @override
   Future<bool> handle(Report error, BuildContext? context) {
     logger.info(
-      "============================== CATCHER LOG ==============================",
+      "======❌=====❌======❌=========❌==== CATCHER LOG ======❌=====❌======❌=========❌====",
     );
-    logger.info("Crash occurred on ${error.dateTime}");
+    logger.info("👉🏾  Crash occurred on ${error.dateTime}");
     logger.info("");
     if (enableDeviceParameters) {
       _printDeviceParametersFormatted(error.deviceParameters);
@@ -33,7 +33,7 @@ class ConsoleHandler extends ReportHandler {
       _printApplicationParametersFormatted(error.applicationParameters);
       logger.info("");
     }
-    logger.info("---------- ERROR ----------");
+    logger.info("---------- 😡ERROR😡 ----------");
     logger.info("${error.error}");
     logger.info("");
     if (enableStackTrace) {

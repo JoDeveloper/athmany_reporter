@@ -112,7 +112,10 @@ class AthmanyCatcher with ReportModeAction {
   void _setupCurrentConfig() {
     _currentConfig = CatcherOptions(
       SilentReportMode(),
-      [HttpHandler(HttpRequestType.post, Uri.parse(_uri), _dbService)],
+      [
+        ConsoleHandler(),
+        HttpHandler(HttpRequestType.post, Uri.parse(_uri), _dbService),
+      ],
     );
   }
 
