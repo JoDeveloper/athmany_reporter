@@ -67,6 +67,7 @@ class HttpHandler extends ReportHandler {
       final request = {
         "method": "ddd",
         "pos_profile": profile['name'],
+        "date_time": DateTime.now().toIso8601String(),
         "error": json,
       };
       final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
