@@ -65,18 +65,10 @@ class Report {
       json["applicationParameters"] = applicationParameters;
     }
     if (enableStackTrace) {
-      final stack = <String, dynamic>{};
-      final stackArrary = stackTrace.toString().split("\n");
-      for (final entry in stackArrary) {
-        stack['${stackArrary.indexOf(entry)}'] = entry;
-      }
-      json["stackTrace"] = stack;
+      json["stackTrace"] = stackTrace.toString();
     }
     if (enableCustomParameters) {
       json["customParameters"] = customParameters;
-    }
-    if (customParameters.isNotEmpty) {
-      json.remove('customParameters');
     }
     return json;
   }

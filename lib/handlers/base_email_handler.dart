@@ -45,7 +45,9 @@ abstract class BaseEmailHandler extends ReportHandler {
     if (enableStackTrace) {
       buffer.write("<h2>Stack trace:</h2>");
 
-      _escapeHtmlValue(report.stackTrace.toString()).split("\n").forEach((element) {
+      _escapeHtmlValue(report.stackTrace.toString())
+          .split("\n")
+          .forEach((element) {
         buffer.write("$element<br>");
       });
       buffer.write("<hr><br>");
@@ -53,14 +55,16 @@ abstract class BaseEmailHandler extends ReportHandler {
     if (enableDeviceParameters) {
       buffer.write("<h2>Device parameters:</h2>");
       for (final entry in report.deviceParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${_escapeHtmlValue(entry.value)}<br>");
+        buffer
+            .write("<b>${entry.key}</b>: ${_escapeHtmlValue(entry.value)}<br>");
       }
       buffer.write("<hr><br>");
     }
     if (enableApplicationParameters) {
       buffer.write("<h2>Application parameters:</h2>");
       for (final entry in report.applicationParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${_escapeHtmlValue(entry.value)}<br>");
+        buffer
+            .write("<b>${entry.key}</b>: ${_escapeHtmlValue(entry.value)}<br>");
       }
       buffer.write("<br><br>");
     }
@@ -68,7 +72,8 @@ abstract class BaseEmailHandler extends ReportHandler {
     if (enableCustomParameters) {
       buffer.write("<h2>Custom parameters:</h2>");
       for (final entry in report.customParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${_escapeHtmlValue(entry.value)}<br>");
+        buffer
+            .write("<b>${entry.key}</b>: ${_escapeHtmlValue(entry.value)}<br>");
       }
       buffer.write("<br><br>");
     }

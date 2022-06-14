@@ -19,6 +19,7 @@ dependencies:
   dio: ^4.0.1
   flutter_mailer: ^2.0.0
   sqflite: ^2.0.2+1
+  universal_io:
 
 dev_dependencies:
   flutter_test:

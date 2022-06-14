@@ -1,5 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:logging/logging.dart';
 
 ///Class used to provide logger for Catcher.

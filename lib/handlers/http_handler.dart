@@ -10,8 +10,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class HttpHandler extends ReportHandler {
-  final _dio = Dio();
-  final DBService _dbService;
+  final Dio _dio = Dio();
+
   final HttpRequestType requestType;
   final Uri endpointUri;
   final Map<String, dynamic> headers;
@@ -22,12 +22,12 @@ class HttpHandler extends ReportHandler {
   final bool enableApplicationParameters;
   final bool enableStackTrace;
   final bool enableCustomParameters;
-  final Map<String, dynamic> customParameters;
+  final DBService dbService;
 
   HttpHandler(
     this.requestType,
     this.endpointUri,
-    this._dbService, {
+    this.dbService, {
     Map<String, dynamic>? headers,
     this.requestTimeout = 5000,
     this.responseTimeout = 5000,
@@ -36,13 +36,10 @@ class HttpHandler extends ReportHandler {
     this.enableApplicationParameters = true,
     this.enableStackTrace = true,
     this.enableCustomParameters = false,
-    Map<String, dynamic>? customParameters,
-  })  : headers = headers ?? <String, dynamic>{},
-        customParameters = customParameters ?? <String, dynamic>{};
+  }) : headers = headers ?? <String, dynamic>{};
 
   @override
   Future<bool> handle(Report error, BuildContext? context) async {
-    _printLog("Posting to ${endpointUri.toString()}");
     if (error.platformType != PlatformType.web) {
       if (!(await CatcherUtils.isInternetConnectionAvailable())) {
         _printLog("No internet connection available");
@@ -57,8 +54,8 @@ class HttpHandler extends ReportHandler {
   }
 
   Future<bool> _sendPost(Report report) async {
-    final data = await _dbService.getProfileDetails();
     try {
+      final profile = await dbService.getProfileDetails();
       final json = report.toJson(
         enableDeviceParameters: enableDeviceParameters,
         enableApplicationParameters: enableApplicationParameters,
@@ -67,7 +64,7 @@ class HttpHandler extends ReportHandler {
       );
       final request = {
         "method": "ddd",
-        "pos_profile": data['name'],
+        "pos_profile": profile['name'],
         "error": json,
       };
       final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
@@ -85,10 +82,7 @@ class HttpHandler extends ReportHandler {
       _printLog("Calling: ${endpointUri.toString()}");
       if (report.screenshot != null) {
         final screenshotPath = report.screenshot?.path ?? "";
-        final FormData formData = FormData.fromMap(<String, dynamic>{
-          "payload_json": json,
-          "file": await MultipartFile.fromFile(screenshotPath),
-        });
+        final FormData formData = FormData.fromMap(<String, dynamic>{"payload_json": json, "file": await MultipartFile.fromFile(screenshotPath)});
         response = await _dio.post<dynamic>(
           endpointUri.toString(),
           data: formData,
@@ -101,7 +95,6 @@ class HttpHandler extends ReportHandler {
           options: options,
         );
       }
-      _printLog("Response: ${response.statusCode}");
       _printLog(
         "HttpHandler response status: ${response.statusCode!} body: ${response.data!}",
       );

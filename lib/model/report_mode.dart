@@ -40,7 +40,8 @@ abstract class ReportMode {
   }
 
   /// Get currently used localization options
-  LocalizationOptions get localizationOptions => _localizationOptions ?? LocalizationOptions.buildDefaultEnglishOptions();
+  LocalizationOptions get localizationOptions =>
+      _localizationOptions ?? LocalizationOptions.buildDefaultEnglishOptions();
 
   /// Get supported platform list
   List<PlatformType> getSupportedPlatforms();

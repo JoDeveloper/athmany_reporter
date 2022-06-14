@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:catcher/model/application_profile.dart';
 import 'package:flutter/foundation.dart';
+import 'package:universal_io/io.dart';
 
 class ApplicationProfileManager {
   /// Get current application profile (release, debug or profile).
