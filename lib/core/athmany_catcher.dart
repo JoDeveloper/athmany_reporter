@@ -15,8 +15,8 @@ import 'package:sqflite/sqlite_api.dart';
 
 import 'db_service.dart';
 
-// const _uri = "http://athmany.tech/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log";
-const _uri = "https://athmany.requestcatcher.com/test";
+const _uri = "http://athmany.tech/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log";
+// const _uri = "https://athmany.requestcatcher.com/test";
 
 class AthmanyCatcher with ReportModeAction {
   static late AthmanyCatcher _instance;
