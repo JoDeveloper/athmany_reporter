@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert' as convert;
 
 import 'package:catcher/core/db_service.dart';
 import 'package:catcher/model/http_request_type.dart';
@@ -68,7 +69,7 @@ class HttpHandler extends ReportHandler {
         "method": "ddd",
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
-        "error": json,
+        "error": convert.json.encode(json),
       };
       final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
       if (headers.isNotEmpty == true) {
