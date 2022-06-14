@@ -7,15 +7,10 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-Database? db;
-
 class DBService {
-  // init database
-  Future<void> initDatabase() async {
-    final path = await getDatabasePath('invoices_database');
-    db = await openDatabase(path, version: 1);
-    // log(db);
-  }
+  final Database db;
+
+  DBService(this.db);
 
   // get database path
   Future<String> getDatabasePath(String dbName) async {
@@ -43,11 +38,8 @@ class DBService {
   Future<void> onCreate(Database db, int version) async {}
 
   Future<Map> getCompanyDetails() async {
-    if (db == null) {
-      await initDatabase();
-    }
     const sql = '''SELECT * FROM company_details''';
-    final data = await db!.rawQuery(sql);
+    final data = await db.rawQuery(sql);
     log(data[0].toString(), name: 'company details');
     return data[0];
   }

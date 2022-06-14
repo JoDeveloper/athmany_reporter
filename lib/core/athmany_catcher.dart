@@ -44,7 +44,7 @@ class AthmanyCatcher with ReportModeAction {
   final bool ensureInitialized;
 
   late DBService _dbService;
-
+  late Database databse;
   late CatcherOptions _currentConfig;
   late CatcherLogger _logger;
   late CatcherScreenshotManager screenshotManager;
@@ -63,6 +63,7 @@ class AthmanyCatcher with ReportModeAction {
   AthmanyCatcher({
     this.child,
     required this.runAppFunction,
+    required this.databse,
     this.enableLogger = true,
     this.ensureInitialized = false,
     GlobalKey<NavigatorState>? navigatorKey,
@@ -77,7 +78,7 @@ class AthmanyCatcher with ReportModeAction {
     _instance = this;
     _currentConfig = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
     _logger = CatcherLogger();
-    _dbService = DBService()..initDatabase();
+    _dbService = DBService(databse);
     _configureNavigatorKey(navigatorKey);
     // _configureLogger();
     _setupErrorHooks();
