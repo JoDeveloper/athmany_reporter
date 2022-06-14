@@ -471,6 +471,9 @@ class AthmanyCatcher with ReportModeAction {
       screenshot,
     );
 
+    _logger.info("Report error has been initialized.");
+    _logger.info(report.toJson().toString());
+
     if (_isReportInReportsOccurencesMap(report)) {
       _logger.fine(
         "Error: '$error' has been skipped to due to duplication occurence within ${_currentConfig.reportOccurrenceTimeout} ms.",
