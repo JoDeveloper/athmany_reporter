@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:developer';
-import 'dart:io';
 
 import 'package:catcher/core/db_service.dart';
 import 'package:catcher/model/http_request_type.dart';
@@ -13,10 +11,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class HttpHandler extends ReportHandler {
-  final Dio _dio = Dio();
-
+  final Dio dio;
   final HttpRequestType requestType;
-  final Uri endpointUri;
   final Map<String, dynamic> headers;
   final int requestTimeout;
   final int responseTimeout;
@@ -29,7 +25,7 @@ class HttpHandler extends ReportHandler {
 
   HttpHandler(
     this.requestType,
-    this.endpointUri,
+    this.dio,
     this.dbService, {
     Map<String, dynamic>? headers,
     this.requestTimeout = 5000,
@@ -58,28 +54,8 @@ class HttpHandler extends ReportHandler {
 
   Future<bool> _sendPost(Report report) async {
     try {
+      final endpointUri = '';
       final profile = await dbService.getProfileDetails();
-      // final endPoint = await dbService.getSavedBaseUrl();
-      _dio.interceptors.add(
-        QueuedInterceptorsWrapper(
-          onRequest: (options, handler) async {
-            final sessionId = await dbService.getSessionId();
-            _printLog("Session id: $sessionId");
-            options.headers["cookie"] = sessionId;
-            options.headers['accept'] = 'application/json';
-            return handler.next(options);
-          },
-          onResponse: (response, handler) {
-            return handler.next(response);
-          },
-          onError: (DioError e, handler) {
-            if (e.error is SocketException || e.error is TimeoutException) {
-              log("No internet connection");
-            }
-            return handler.next(e);
-          },
-        ),
-      );
 
       final json = report.toJson(
         enableDeviceParameters: enableDeviceParameters,
@@ -108,13 +84,13 @@ class HttpHandler extends ReportHandler {
       if (report.screenshot != null) {
         final screenshotPath = report.screenshot?.path ?? "";
         final FormData formData = FormData.fromMap(<String, dynamic>{"payload_json": json, "file": await MultipartFile.fromFile(screenshotPath)});
-        response = await _dio.post<dynamic>(
+        response = await dio.post<dynamic>(
           (endpointUri).toString(),
           data: formData,
           options: options,
         );
       } else {
-        response = await _dio.post<dynamic>(
+        response = await dio.post<dynamic>(
           endpointUri.toString(),
           data: request,
           options: options,

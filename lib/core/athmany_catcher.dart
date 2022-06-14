@@ -8,6 +8,7 @@ import 'package:catcher/core/catcher_screenshot_manager.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:catcher/utils/catcher_error_widget.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -28,6 +29,7 @@ class AthmanyCatcher with ReportModeAction {
   final Database database;
 
   late DBService _dbService;
+  late Dio dio;
 
   ///Run app function which will be ran
   final void Function()? runAppFunction;
@@ -66,6 +68,7 @@ class AthmanyCatcher with ReportModeAction {
     this.rootWidget,
     required this.runAppFunction,
     required this.database,
+    required this.dio,
     this.releaseConfig,
     this.debugConfig,
     this.profileConfig,
@@ -115,7 +118,7 @@ class AthmanyCatcher with ReportModeAction {
       SilentReportMode(),
       [
         ConsoleHandler(),
-        HttpHandler(HttpRequestType.post, Uri.parse(_uri), _dbService),
+        HttpHandler(HttpRequestType.post, dio, _dbService),
       ],
     );
   }
