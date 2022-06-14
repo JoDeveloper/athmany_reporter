@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../handlers/console_handler.dart';
 import '../handlers/http_handler.dart';
 import '../mode/silent_report_mode.dart';
 import '../model/http_request_type.dart';
@@ -80,7 +79,6 @@ class AthmanyCatcher with ReportModeAction {
     _instance = this;
     _dbService = DBService(databse);
     _currentConfig = CatcherOptions(SilentReportMode(), [
-      ConsoleHandler(),
       HttpHandler(HttpRequestType.post, Uri.parse(_uri), _dbService),
     ]);
     _logger = CatcherLogger();

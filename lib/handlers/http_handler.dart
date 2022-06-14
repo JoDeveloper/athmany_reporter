@@ -42,6 +42,7 @@ class HttpHandler extends ReportHandler {
 
   @override
   Future<bool> handle(Report error, BuildContext? context) async {
+    _printLog("Posting to ${endpointUri.toString()}");
     if (error.platformType != PlatformType.web) {
       if (!(await CatcherUtils.isInternetConnectionAvailable())) {
         _printLog("No internet connection available");
@@ -50,7 +51,6 @@ class HttpHandler extends ReportHandler {
     }
 
     if (requestType == HttpRequestType.post) {
-      _printLog("Posting to ${endpointUri.toString()}");
       return _sendPost(error);
     }
     return true;
