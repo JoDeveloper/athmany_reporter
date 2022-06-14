@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'dart:collection';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:catcher/core/db_service.dart';
 import 'package:catcher/model/http_request_type.dart';
@@ -56,6 +59,27 @@ class HttpHandler extends ReportHandler {
   Future<bool> _sendPost(Report report) async {
     try {
       final profile = await dbService.getProfileDetails();
+      final endPoint = await dbService.getSavedBaseUrl();
+      _dio.interceptors.add(
+        QueuedInterceptorsWrapper(
+          onRequest: (options, handler) async {
+            final sessionId = await dbService.getSessionId();
+            options.headers["cookie"] = sessionId;
+            options.headers['accept'] = 'application/json';
+            return handler.next(options);
+          },
+          onResponse: (response, handler) {
+            return handler.next(response);
+          },
+          onError: (DioError e, handler) {
+            if (e.error is SocketException || e.error is TimeoutException) {
+              log("No internet connection");
+            }
+            return handler.next(e);
+          },
+        ),
+      );
+
       final json = report.toJson(
         enableDeviceParameters: enableDeviceParameters,
         enableApplicationParameters: enableApplicationParameters,
@@ -84,13 +108,13 @@ class HttpHandler extends ReportHandler {
         final screenshotPath = report.screenshot?.path ?? "";
         final FormData formData = FormData.fromMap(<String, dynamic>{"payload_json": json, "file": await MultipartFile.fromFile(screenshotPath)});
         response = await _dio.post<dynamic>(
-          endpointUri.toString(),
+          Uri.parse(endPoint!).toString(),
           data: formData,
           options: options,
         );
       } else {
         response = await _dio.post<dynamic>(
-          endpointUri.toString(),
+          Uri.parse(endPoint!).toString(),
           data: request,
           options: options,
         );

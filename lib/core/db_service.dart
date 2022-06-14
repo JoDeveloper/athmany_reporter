@@ -28,4 +28,10 @@ class DBService {
     final baseUrl = sharedPreferences.get('base_url') as String;
     return baseUrl + _uri;
   }
+
+  Future<String> getSessionId () async{
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final sessionId = sharedPreferences.get('sid') as String;
+    return sessionId;
+  }
 }
