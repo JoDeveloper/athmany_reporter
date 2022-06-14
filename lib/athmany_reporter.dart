@@ -21,4 +21,4 @@ export 'package:catcher/model/toast_handler_gravity.dart';
 export 'package:catcher/model/toast_handler_length.dart';
 export 'package:catcher/utils/catcher_logger.dart';
 
-export 'core/catcher.dart';
+export 'core/athmany_catcher.dart';

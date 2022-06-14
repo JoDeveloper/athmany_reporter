@@ -24,8 +24,8 @@ import '../mode/silent_report_mode.dart';
 import '../model/http_request_type.dart';
 import 'db_service.dart';
 
-class Catcher with ReportModeAction {
-  static late Catcher _instance;
+class AthmanyCatcher with ReportModeAction {
+  static late AthmanyCatcher _instance;
   static GlobalKey<NavigatorState>? _navigatorKey;
 
   ///Run app function which will be ran
@@ -60,7 +60,7 @@ class Catcher with ReportModeAction {
   }
 
   /// Builds catcher instance
-  Catcher({
+  AthmanyCatcher({
     this.child,
     required this.runAppFunction,
     this.enableLogger = true,
@@ -711,7 +711,7 @@ class Catcher with ReportModeAction {
   }
 
   ///Get current Catcher instance.
-  static Catcher getInstance() {
+  static AthmanyCatcher getInstance() {
     return _instance;
   }
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'catcher.dart';
+import 'athmany_catcher.dart';
 
 ///Screenshot widget used to create screenshot of all child widgets.
 class CatcherScreenshot extends StatefulWidget {
   final Widget child;
-  final Catcher catcher;
+  final AthmanyCatcher catcher;
 
   const CatcherScreenshot({
     Key? key,
