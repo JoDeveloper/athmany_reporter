@@ -1,6 +1,7 @@
 library catcher;
 
 export 'package:catcher/catcher.dart';
+export 'package:catcher/core/athmany_catcher.dart';
 export 'package:catcher/handlers/console_handler.dart';
 export 'package:catcher/handlers/http_handler.dart';
 export 'package:catcher/handlers/snackbar_handler.dart';
