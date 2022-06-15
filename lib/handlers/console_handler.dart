@@ -15,7 +15,7 @@ class ConsoleHandler extends ReportHandler {
   ConsoleHandler({
     this.enableDeviceParameters = false,
     this.enableApplicationParameters = false,
-    this.enableStackTrace = false,
+    this.enableStackTrace = true,
     this.enableCustomParameters = false,
     this.handleWhenRejected = false,
   });
@@ -25,7 +25,7 @@ class ConsoleHandler extends ReportHandler {
     logger.info(
       "======❌=====❌======❌=========❌==== CATCHER LOG ======❌=====❌======❌=========❌====",
     );
-    logger.info("👉🏾  Crash occurred on ${error.dateTime}");
+    logger.info("⏱  Crash occurred on ${error.dateTime}");
     logger.info("");
     if (enableDeviceParameters) {
       _printDeviceParametersFormatted(error.deviceParameters);
@@ -36,10 +36,10 @@ class ConsoleHandler extends ReportHandler {
       logger.info("");
     }
     logger.info("---------- 😡 ERROR 😡 ----------");
-    logger.info("${error.error}");
+    logger.info(error.functionNameWithCaller);
     logger.info("");
     if (enableStackTrace) {
-       logger.info("-------👿 STACK TRACE 👿-------");
+      logger.info("-------👿 STACK TRACE 👿-------");
       logger.info(LoggerStackTrace.from(error.stackTrace).toString());
     }
     if (enableCustomParameters) {
