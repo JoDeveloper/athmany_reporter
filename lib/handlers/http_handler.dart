@@ -96,7 +96,9 @@ class HttpHandler extends ReportHandler {
       _printLog("HttpHandler TimeoutException: $e");
       return false;
     } catch (error, stackTrace) {
-      logger.severe("HttpHandler error: $error, stackTrace: $stackTrace");
+      //TODO: Enable this when debgging is needed
+      // logger.severe("HttpHandler error: $error, stackTrace: $stackTrace");
+      _printLog("HttpHandler error: $error, stackTrace: $stackTrace");
       return false;
     }
   }
