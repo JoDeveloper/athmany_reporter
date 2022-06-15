@@ -67,7 +67,7 @@ class HttpHandler extends ReportHandler {
         "method": report.toJson()['method'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
-        "error": report.functionNameWithCaller,
+        "error": report.toJson(),
       };
       cachedrequest = CachedRequest(url: _uri, body: Body.fromJson(data));
       final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
