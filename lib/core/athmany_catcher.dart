@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 
 import 'package:catcher/catcher.dart';
 import 'package:catcher/core/application_profile_manager.dart';
-import 'package:catcher/core/catcher_screenshot_manager.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:catcher/utils/catcher_error_widget.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -50,7 +48,6 @@ class AthmanyCatcher with ReportModeAction {
 
   late CatcherOptions _currentConfig;
   late CatcherLogger _logger;
-  late CatcherScreenshotManager screenshotManager;
   final Map<String, dynamic> _deviceParameters = <String, dynamic>{};
   final Map<String, dynamic> _applicationParameters = <String, dynamic>{};
   final List<Report> _cachedReports = [];
@@ -89,7 +86,6 @@ class AthmanyCatcher with ReportModeAction {
     _configureLogger();
     _setupErrorHooks();
     _setupReportModeActionInReportMode();
-    _setupScreenshotManager();
 
     _loadDeviceInfo();
     _loadApplicationInfo();
@@ -139,7 +135,6 @@ class AthmanyCatcher with ReportModeAction {
     }
     _setupCurrentConfig();
     _setupReportModeActionInReportMode();
-    _setupScreenshotManager();
     _configureLogger();
     _localizationOptions = null;
   }
@@ -452,16 +447,6 @@ class AthmanyCatcher with ReportModeAction {
     }
   }
 
-  ///Setup screenshot manager's screenshots path.
-  void _setupScreenshotManager() {
-    screenshotManager = CatcherScreenshotManager(_logger);
-    final String screenshotsPath = _currentConfig.screenshotsPath;
-    if (!ApplicationProfileManager.isWeb() && screenshotsPath.isEmpty) {
-      _logger.warning("Screenshots path is empty. Screenshots won't work.");
-    }
-    screenshotManager.path = screenshotsPath;
-  }
-
   /// Report checked error (error caught in try-catch block). Catcher will treat
   /// this as normal exception and pass it to handlers.
   static void reportCheckedError(dynamic error, dynamic stackTrace, String methodName) {
@@ -493,10 +478,6 @@ class AthmanyCatcher with ReportModeAction {
 
     _cleanPastReportsOccurences();
 
-    File? screenshot;
-    if (!ApplicationProfileManager.isWeb()) {
-      screenshot = await screenshotManager.captureAndSave();
-    }
     if (methodName != null) {
       _currentConfig.customParameters.addAll({
         "methodName": methodName,
@@ -512,7 +493,6 @@ class AthmanyCatcher with ReportModeAction {
       _currentConfig.customParameters,
       errorDetails,
       _getPlatformType(),
-      screenshot,
     );
 
     if (_isReportInReportsOccurencesMap(report)) {
