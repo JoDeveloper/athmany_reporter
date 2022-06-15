@@ -64,7 +64,7 @@ class HttpHandler extends ReportHandler {
       final profile = await dbService.getProfileDetails();
 
       final data = {
-        "method": report.toJson()['methodName'],
+        "method": report.toJson()['method'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
         "error": report.functionNameWithCaller,
