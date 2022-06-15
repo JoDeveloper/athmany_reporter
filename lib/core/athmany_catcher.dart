@@ -704,10 +704,10 @@ class AthmanyCatcher with ReportModeAction {
 
   ///Clean report ocucrences from the past.
   void _cleanPastReportsOccurences() {
-    final int occurenceTimeout = _currentConfig.reportOccurrenceTimeout;
-    final DateTime nowDateTime = DateTime.now();
+    final occurenceTimeout = _currentConfig.reportOccurrenceTimeout;
+    final nowDateTime = DateTime.now();
     _reportsOcurrenceMap.removeWhere((key, value) {
-      final DateTime occurenceWithTimeout = key.add(Duration(milliseconds: occurenceTimeout));
+      final occurenceWithTimeout = key.add(Duration(milliseconds: occurenceTimeout));
       return nowDateTime.isAfter(occurenceWithTimeout);
     });
   }
