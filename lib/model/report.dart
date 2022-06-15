@@ -58,7 +58,7 @@ class Report {
       json["applicationParameters"] = applicationParameters;
     }
     if (enableStackTrace) {
-      json["stackTrace"] = stackTrace.toString();
+      json["stackTrace"] = LoggerStackTrace.from(stackTrace).toString();
       json['method'] = stackTrace.toString().split('\n')[0];
     }
     if (enableCustomParameters) {
@@ -119,11 +119,12 @@ class LoggerStackTrace {
 
   @override
   String toString() {
-    return 'LoggerStackTrace('
-        'functionName: $functionName, '
-        'callerFunctionName: $callerFunctionName, '
-        'fileName: $fileName, '
-        'lineNumber: $lineNumber, '
-        'columnNumber: $columnNumber,)';
+    return 'AthmanyCatcher('
+        'functionName: $functionName , '
+        'callerFunctionName: $callerFunctionName , '
+        'fileName: $fileName  , '
+        'lineNumber: $lineNumber  , '
+        'columnNumber: $columnNumber'
+        ' )';
   }
 }
