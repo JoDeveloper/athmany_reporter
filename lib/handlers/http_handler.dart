@@ -71,7 +71,7 @@ class HttpHandler extends ReportHandler {
         enableCustomParameters: enableCustomParameters,
       );
       final data = {
-        "method": report.customParameters.isEmpty ? json['method'] : report.customParameters['methodName'],
+        "method": report.customParameters.isEmpty ? report.error.toString() : report.customParameters['methodName'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
         "error": convert.json.encode(json),
