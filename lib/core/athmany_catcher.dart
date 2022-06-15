@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:async';
 
 import 'package:catcher/catcher.dart';
@@ -23,7 +25,7 @@ class AthmanyCatcher with ReportModeAction {
   static GlobalKey<NavigatorState>? _navigatorKey;
 
   /// Root widget which will be ran
-  final Widget? rootWidget;
+  final Widget appWidget;
 
   final Database database;
 
@@ -63,8 +65,8 @@ class AthmanyCatcher with ReportModeAction {
 
   /// Builds catcher instance
   AthmanyCatcher({
-    this.rootWidget,
-    required this.runAppFunction,
+    required this.appWidget,
+    this.runAppFunction,
     required this.database,
     required this.dio,
     this.releaseConfig,
@@ -74,7 +76,7 @@ class AthmanyCatcher with ReportModeAction {
     this.ensureInitialized = false,
     GlobalKey<NavigatorState>? navigatorKey,
   }) : assert(
-          rootWidget != null || runAppFunction != null,
+          appWidget != null || runAppFunction != null,
           "You need to provide rootWidget or runAppFunction",
         ) {
     _configure(navigatorKey);
@@ -179,9 +181,9 @@ class AthmanyCatcher with ReportModeAction {
       _reportError(details.exception, details.stack, errorDetails: details);
     };
 
-    if (rootWidget != null) {
+    if (appWidget != null) {
       _runZonedGuarded(() {
-        runApp(rootWidget!);
+        runApp(appWidget);
       });
     } else if (runAppFunction != null) {
       _runZonedGuarded(() {
