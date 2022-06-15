@@ -1,65 +1,57 @@
-class LoggerStackTrace {
-  const LoggerStackTrace._({
-    required this.functionName,
-    required this.callerFunctionName,
-    required this.fileName,
-    required this.lineNumber,
-    required this.columnNumber,
-  });
+class CustomTrace {
+  late final StackTrace _trace;
 
-  factory LoggerStackTrace.from(StackTrace trace) {
-    final frames = trace.toString().split('\n');
-    final functionName = _getFunctionNameFromFrame(frames[0]);
-    final callerFunctionName = _getFunctionNameFromFrame(frames[1]);
-    final fileInfo = _getFileInfoFromFrame(frames[0]);
+  String? fileName;
+  String? functionName;
+  String? callerFunctionName;
+  int? lineNumber;
+  int? columnNumber;
 
-    return LoggerStackTrace._(
-      functionName: functionName,
-      callerFunctionName: callerFunctionName,
-      fileName: fileInfo[0],
-      lineNumber: int.parse(fileInfo[1]),
-      columnNumber: int.parse(fileInfo[2].replaceFirst(')', '')),
-    );
+  CustomTrace(this._trace) {
+    _parseTrace();
   }
 
-  final String functionName;
-  final String callerFunctionName;
-  final String fileName;
-  final int lineNumber;
-  final int columnNumber;
+  String _getFunctionNameFromFrame(String frame) {
+    var currentTrace = frame;
 
-  static List<String> _getFileInfoFromFrame(String trace) {
-    final indexOfFileName = trace.indexOf(RegExp('[A-Za-z]+.dart'));
-    final fileInfo = trace.substring(indexOfFileName);
+    var indexOfWhiteSpace = currentTrace.indexOf(' ');
 
-    return fileInfo.split(':');
+    var subStr = currentTrace.substring(indexOfWhiteSpace);
+
+    final indexOfFunction = subStr.indexOf(RegExp(r'[A-Za-z0-9]'));
+
+    subStr = subStr.substring(indexOfFunction);
+
+    indexOfWhiteSpace = subStr.indexOf(' ');
+
+    subStr = subStr.substring(0, indexOfWhiteSpace);
+
+    return subStr;
   }
 
-  static String _getFunctionNameFromFrame(String trace) {
-    final indexOfWhiteSpace = trace.indexOf(' ');
-    final subStr = trace.substring(indexOfWhiteSpace);
-    final indexOfFunction = subStr.indexOf(RegExp('[A-Za-z0-9]'));
+  void _parseTrace() {
+    var frames = _trace.toString().split("\n");
 
-    try {
-      return subStr.substring(indexOfFunction).substring(0, subStr.substring(indexOfFunction).indexOf(' '));
-    } on Exception {
-      return '';
-    }
-  }
+    functionName = _getFunctionNameFromFrame(frames[0]);
 
-  String get functionNameWithCaller {
-    return '$callerFunctionName -> $functionName';
+    callerFunctionName = _getFunctionNameFromFrame(frames[1]);
+
+    var traceString = frames[0];
+
+    var indexOfFileName = traceString.indexOf(RegExp(r'[A-Za-z]+.dart'));
+
+    var fileInfo = traceString.substring(indexOfFileName);
+
+    var listOfInfos = fileInfo.split(":");
+
+    fileName = listOfInfos[0];
+    lineNumber = int.parse(listOfInfos[1]);
+    var columnStr = listOfInfos[2];
+    columnStr = columnStr.replaceFirst(")", "");
+    columnNumber = int.parse(columnStr);
   }
 
   @override
-  String toString() {
-    return """
-    AthmanyCatcher :
-        ⚡️ functionName: $functionName 
-        🔥 callerFunctionName: $callerFunctionName
-        ⚠️ fileName: $fileName
-        ❗️ lineNumber: $lineNumber
-      ❗️❗️ columnNumber: $columnNumber
-    """;
-  }
+  String toString() =>
+      ("Source file: $fileName, function: $functionName, caller function: $callerFunctionName, current line of code since the instanciation/creation of the custom trace object: $lineNumber, even the column(yay!): $columnNumber");
 }

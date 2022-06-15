@@ -3,8 +3,6 @@ import 'package:catcher/model/report.dart';
 import 'package:catcher/model/report_handler.dart';
 import 'package:flutter/material.dart';
 
-import 'stack_trace_handler.dart';
-
 class ConsoleHandler extends ReportHandler {
   final bool enableDeviceParameters;
   final bool enableApplicationParameters;
@@ -40,7 +38,7 @@ class ConsoleHandler extends ReportHandler {
     logger.info("");
     if (enableStackTrace) {
       logger.info("-------👿 STACK TRACE 👿-------");
-      logger.info(LoggerStackTrace.from(error.stackTrace).toString());
+      _printStackTraceFormatted(error.stackTrace);
     }
     if (enableCustomParameters) {
       _printCustomParametersFormatted(error.customParameters);
@@ -71,6 +69,13 @@ class ConsoleHandler extends ReportHandler {
     logger.info("------- CUSTOM INFO -------");
     for (final entry in customParameters.entries) {
       logger.info("${entry.key}: ${entry.value}");
+    }
+  }
+
+  void _printStackTraceFormatted(StackTrace? stackTrace) {
+    logger.info("------- STACK TRACE -------");
+    for (final entry in stackTrace.toString().split("\n")) {
+      logger.info(entry);
     }
   }
 
