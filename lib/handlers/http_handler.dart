@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert' as convert;
+import 'dart:io';
 
 import 'package:catcher/core/db_service.dart';
 import 'package:catcher/model/http_request_type.dart';
@@ -66,7 +67,7 @@ class HttpHandler extends ReportHandler {
         enableCustomParameters: enableCustomParameters,
       );
       final request = {
-        "method": json['method'],
+        "method": report.customParameters.isEmpty ? json['method'] : report.customParameters['methodName'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
         "error": convert.json.encode(json),
@@ -90,6 +91,14 @@ class HttpHandler extends ReportHandler {
         "HttpHandler response status: ${response.statusCode!} body: ${response.data!}",
       );
       return true;
+    } on SocketException catch (e) {
+      // No internet connection TODO: handle this
+      _printLog("HttpHandler SocketException: $e");
+      return false;
+    } on TimeoutException catch (e) {
+      // No internet connection TODO: handle this
+      _printLog("HttpHandler TimeoutException: $e");
+      return false;
     } catch (error, stackTrace) {
       _printLog("HttpHandler error: $error, stackTrace: $stackTrace");
       return false;

@@ -464,11 +464,12 @@ class AthmanyCatcher with ReportModeAction {
 
   /// Report checked error (error caught in try-catch block). Catcher will treat
   /// this as normal exception and pass it to handlers.
-  static void reportCheckedError(dynamic error, dynamic stackTrace) {
+  static void reportCheckedError(dynamic error, dynamic stackTrace, String methodName) {
     dynamic errorValue = error;
     dynamic stackTraceValue = stackTrace;
     errorValue ??= "undefined error";
     stackTraceValue ??= StackTrace.current;
+
     _instance._reportError(error, stackTrace);
   }
 
@@ -476,6 +477,7 @@ class AthmanyCatcher with ReportModeAction {
     dynamic error,
     dynamic stackTrace, {
     FlutterErrorDetails? errorDetails,
+    String? methodName,
   }) async {
     if (errorDetails?.silent == true && _currentConfig.handleSilentError == false) {
       _logger.info(
@@ -494,6 +496,11 @@ class AthmanyCatcher with ReportModeAction {
     File? screenshot;
     if (!ApplicationProfileManager.isWeb()) {
       screenshot = await screenshotManager.captureAndSave();
+    }
+    if (methodName != null) {
+      _currentConfig.customParameters.addAll({
+        "methodName": methodName,
+      });
     }
 
     final Report report = Report(
