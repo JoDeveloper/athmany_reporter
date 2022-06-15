@@ -40,7 +40,11 @@ class LoggerStackTrace {
     final subStr = trace.substring(indexOfWhiteSpace);
     final indexOfFunction = subStr.indexOf(RegExp('[A-Za-z0-9]'));
 
-    return subStr.substring(indexOfFunction).substring(0, subStr.substring(indexOfFunction).indexOf(' '));
+    try {
+      return subStr.substring(indexOfFunction).substring(0, subStr.substring(indexOfFunction).indexOf(' '));
+    } on Exception {
+      return '';
+    }
   }
 
   String get functionNameWithCaller {
