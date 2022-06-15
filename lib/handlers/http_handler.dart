@@ -11,6 +11,9 @@ import 'package:catcher/model/report_handler.dart';
 import 'package:catcher/utils/catcher_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+
+import '../model/cached_request.dart';
 
 const _uri = "/api/method/business_layer.pos_business_layer.doctype.pos_error_log.pos_error_log.new_pos_error_log";
 
@@ -57,6 +60,7 @@ class HttpHandler extends ReportHandler {
   }
 
   Future<bool> _sendPost(Report report) async {
+    CachedRequest? cachedrequest;
     try {
       final profile = await dbService.getProfileDetails();
 
@@ -66,12 +70,13 @@ class HttpHandler extends ReportHandler {
         enableStackTrace: enableStackTrace,
         enableCustomParameters: enableCustomParameters,
       );
-      final request = {
+      final data = {
         "method": report.customParameters.isEmpty ? json['method'] : report.customParameters['methodName'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
         "error": convert.json.encode(json),
       };
+      cachedrequest = CachedRequest(url: _uri, body: Body.fromJson(data));
       final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
       if (headers.isNotEmpty == true) {
         mutableHeaders.addAll(headers);
@@ -85,18 +90,18 @@ class HttpHandler extends ReportHandler {
 
       Response? response;
       {
-        response = await dio.post(_uri, data: request, options: options);
+        response = await dio.post(_uri, data: data, options: options);
       }
       _printLog(
         "HttpHandler response status: ${response.statusCode!} body: ${response.data!}",
       );
       return true;
     } on SocketException catch (e) {
-      // No internet connection TODO: handle this
+      _cacheThRequest(cachedrequest);
       _printLog("HttpHandler SocketException: $e");
       return false;
     } on TimeoutException catch (e) {
-      // No internet connection TODO: handle this
+      _cacheThRequest(cachedrequest);
       _printLog("HttpHandler TimeoutException: $e");
       return false;
     } catch (error, stackTrace) {
@@ -125,4 +130,18 @@ class HttpHandler extends ReportHandler {
         PlatformType.macOS,
         PlatformType.windows,
       ];
+
+  void _cacheThRequest(CachedRequest? cachedRequest) {
+    if (cachedRequest != null) {
+      final cache = GetStorage();
+
+      final cachedRequestString = cache.read<String?>("cachedRequests");
+
+      final cachedRequests = cachedRequestString != null ? cachedRequestFromJson(cachedRequestString) : <CachedRequest>[];
+
+      cachedRequests.add(cachedRequest);
+
+      cache.write("cachedRequests", cachedRequestToJson(cachedRequests));
+    }
+  }
 }

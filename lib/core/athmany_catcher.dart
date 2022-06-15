@@ -1,17 +1,19 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:catcher/catcher.dart';
 import 'package:catcher/core/application_profile_manager.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:catcher/utils/catcher_error_widget.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqlite_api.dart';
 
+import '../model/cached_request.dart';
 import 'db_service.dart';
 
 // const _uri = "https://alqimma.athmany.tech";
@@ -81,12 +83,12 @@ class AthmanyCatcher with ReportModeAction {
   void _configure(GlobalKey<NavigatorState>? navigatorKey) async {
     _instance = this;
     _dbService = DBService(database);
+    await GetStorage.init();
     _configureNavigatorKey(navigatorKey);
     _setupCurrentConfig();
     _configureLogger();
     _setupErrorHooks();
     _setupReportModeActionInReportMode();
-
     _loadDeviceInfo();
     _loadApplicationInfo();
 
@@ -98,6 +100,11 @@ class AthmanyCatcher with ReportModeAction {
     } else {
       _logger.fine("Catcher configured successfully.");
     }
+    Connectivity().onConnectivityChanged.listen((result) {
+      if (result == ConnectivityResult.mobile || result == ConnectivityResult.wifi) {
+        _sendCachedReports();
+      }
+    });
   }
 
   void _configureNavigatorKey(GlobalKey<NavigatorState>? navigatorKey) {
@@ -113,7 +120,11 @@ class AthmanyCatcher with ReportModeAction {
       SilentReportMode(),
       [
         ConsoleHandler(),
-        HttpHandler(HttpRequestType.post, dio, _dbService),
+        HttpHandler(
+          HttpRequestType.post,
+          dio,
+          _dbService,
+        ),
       ],
     );
   }
@@ -167,19 +178,6 @@ class AthmanyCatcher with ReportModeAction {
     FlutterError.onError = (FlutterErrorDetails details) async {
       _reportError(details.exception, details.stack, errorDetails: details);
     };
-
-    ///Web doesn't have Isolate error listener support
-    if (!ApplicationProfileManager.isWeb()) {
-      Isolate.current.addErrorListener(
-        RawReceivePort((dynamic pair) async {
-          final isolateError = pair as List<dynamic>;
-          _reportError(
-            isolateError.first.toString(),
-            isolateError.last.toString(),
-          );
-        }).sendPort,
-      );
-    }
 
     if (rootWidget != null) {
       _runZonedGuarded(() {
@@ -734,5 +732,27 @@ class AthmanyCatcher with ReportModeAction {
   ///Get current Catcher instance.
   static AthmanyCatcher getInstance() {
     return _instance;
+  }
+
+  void _sendCachedReports() async {
+    final cache = GetStorage();
+    final cahcedRequests = cache.read<String?>('cachedRequests');
+    if (cahcedRequests != null) {
+      final requests = cachedRequestFromJson(cahcedRequests);
+      for (final request in requests) {
+        final result = await _sendReport(request);
+        if (result) {
+          requests.remove(request);
+        }
+      }
+      if (requests.isNotEmpty) {
+        cache.write('cachedRequests', cachedRequestToJson(requests));
+      }
+    }
+  }
+
+  Future<bool> _sendReport(CachedRequest request) async {
+    final response = await dio.post(request.url, data: request.body.toJson());
+    return response.statusCode == 200;
   }
 }
