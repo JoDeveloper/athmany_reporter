@@ -85,20 +85,18 @@ class HttpHandler extends ReportHandler {
       {
         response = await dio.post(_uri, data: data, options: options);
       }
-      _printLog(
-        "HttpHandler response status: ${response.statusCode!} body: ${response.data!}",
-      );
+      logger.severe("HttpHandler response status: ${response.statusCode!} body: ${response.data!}");
       return true;
     } on SocketException catch (e) {
-      _cacheThRequest(cachedrequest);
+      _cacheTheRequest(cachedrequest);
       _printLog("HttpHandler SocketException: $e");
       return false;
     } on TimeoutException catch (e) {
-      _cacheThRequest(cachedrequest);
+      _cacheTheRequest(cachedrequest);
       _printLog("HttpHandler TimeoutException: $e");
       return false;
     } catch (error, stackTrace) {
-      _printLog("HttpHandler error: $error, stackTrace: $stackTrace");
+      logger.severe("HttpHandler error: $error, stackTrace: $stackTrace");
       return false;
     }
   }
@@ -124,7 +122,7 @@ class HttpHandler extends ReportHandler {
         PlatformType.windows,
       ];
 
-  void _cacheThRequest(CachedRequest? cachedRequest) {
+  void _cacheTheRequest(CachedRequest? cachedRequest) {
     if (cachedRequest != null) {
       final cache = GetStorage();
 
