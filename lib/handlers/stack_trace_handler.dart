@@ -49,12 +49,14 @@ class LoggerStackTrace {
 
   @override
   String toString() {
-    return 'AthmanyCatcher('
-        '⚡️ functionName: $functionName , '
-        '🔥 callerFunctionName: $callerFunctionName , '
-        '⚠️ fileName: $fileName  , '
-        '❗️ lineNumber: $lineNumber  , '
-        '❗️❗️ columnNumber: $columnNumber'
-        ' )';
+    return """ \n
+    AthmanyCatcher : \n
+        ⚡️ functionName: $functionName\n 
+        🔥 callerFunctionName: $callerFunctionName \n
+        ⚠️ fileName: $fileName\n
+        ❗️ lineNumber: $lineNumber\n
+        ❗️❗️ columnNumber: $columnNumber\n
+         \n
+    """;
   }
 }
