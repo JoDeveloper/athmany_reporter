@@ -38,6 +38,8 @@ class Report {
     this.platformType,
   );
 
+  String get functionNameWithCaller => LoggerStackTrace.from(stackTrace).functionNameWithCaller;
+
   /// Creates json from current instance
   Map<String, dynamic> toJson({
     bool enableDeviceParameters = true,
@@ -46,7 +48,7 @@ class Report {
     bool enableCustomParameters = false,
   }) {
     final Map<String, dynamic> json = <String, dynamic>{
-      "error": LoggerStackTrace.from(stackTrace).functionNameWithCaller,
+      "error": LoggerStackTrace.from(stackTrace).toString(),
       "customParameters": customParameters,
       "dateTime": dateTime.toIso8601String(),
       "platformType": describeEnum(platformType),
@@ -59,7 +61,7 @@ class Report {
     }
     if (enableStackTrace) {
       json["stackTrace"] = LoggerStackTrace.from(stackTrace).toString();
-      json['method'] = stackTrace.toString().split('\n')[0];
+      json['method'] = LoggerStackTrace.from(stackTrace).functionName;
     }
     if (enableCustomParameters) {
       json["customParameters"] = customParameters;

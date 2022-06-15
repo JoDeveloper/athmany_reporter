@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert' as convert;
 import 'dart:io';
 
 import 'package:catcher/core/db_service.dart';
@@ -64,17 +63,11 @@ class HttpHandler extends ReportHandler {
     try {
       final profile = await dbService.getProfileDetails();
 
-      final json = report.toJson(
-        enableDeviceParameters: enableDeviceParameters,
-        enableApplicationParameters: enableApplicationParameters,
-        enableStackTrace: enableStackTrace,
-        enableCustomParameters: enableCustomParameters,
-      );
       final data = {
-        "method": report.customParameters.isEmpty ? report.error.toString() : report.customParameters['methodName'],
+        "method": report.toJson()['methodName'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
-        "error": convert.json.encode(json),
+        "error": report.functionNameWithCaller,
       };
       cachedrequest = CachedRequest(url: _uri, body: Body.fromJson(data));
       final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
