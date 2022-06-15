@@ -46,7 +46,7 @@ class Report {
     bool enableCustomParameters = false,
   }) {
     final Map<String, dynamic> json = <String, dynamic>{
-      "error": LoggerStackTrace.from(stackTrace).toString(),
+      "error": LoggerStackTrace.from(stackTrace).functionNameWithCaller,
       "customParameters": customParameters,
       "dateTime": dateTime.toIso8601String(),
       "platformType": describeEnum(platformType),
@@ -111,6 +111,10 @@ class LoggerStackTrace {
     final indexOfFunction = subStr.indexOf(RegExp('[A-Za-z0-9]'));
 
     return subStr.substring(indexOfFunction).substring(0, subStr.substring(indexOfFunction).indexOf(' '));
+  }
+
+  String get functionNameWithCaller {
+    return '$callerFunctionName -> $functionName';
   }
 
   @override
