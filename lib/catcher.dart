@@ -1,10 +1,10 @@
 library catcher;
 
-export 'package:catcher/core/athmany_catcher.dart';
-export "package:catcher/handlers/console_handler.dart";
-export "package:catcher/handlers/http_handler.dart";
-export "package:catcher/handlers/snackbar_handler.dart";
-export "package:catcher/handlers/toast_handler.dart";
+export 'package:catcher/catcher.dart';
+export 'package:catcher/handlers/console_handler.dart';
+export 'package:catcher/handlers/http_handler.dart';
+export 'package:catcher/handlers/snackbar_handler.dart';
+export 'package:catcher/handlers/toast_handler.dart';
 export 'package:catcher/mode/dialog_report_mode.dart';
 export 'package:catcher/mode/page_report_mode.dart';
 export 'package:catcher/mode/report_mode_action_confirmed.dart';
