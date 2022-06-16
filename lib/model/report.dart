@@ -50,7 +50,7 @@ class Report {
     bool enableCustomParameters = false,
   }) {
     final Map<String, dynamic> json = <String, dynamic>{
-      "error": CustomTrace(stackTrace).toString(),
+      "error": CustomTrace(stackTrace).printError(error),
       "customParameters": customParameters,
       "dateTime": dateTime.toIso8601String(),
       "platformType": describeEnum(platformType),

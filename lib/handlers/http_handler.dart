@@ -59,8 +59,7 @@ class HttpHandler extends ReportHandler {
   }
 
   Future<bool> _sendPost(Report report) async {
-    CachedRequest? cachedrequest;
-    try {
+    if (!(await CatcherUtils.isInternetConnectionAvailable())) {
       final profile = await dbService.getProfileDetails();
 
       final data = {
@@ -69,37 +68,49 @@ class HttpHandler extends ReportHandler {
         "date_time": DateTime.now().toIso8601String(),
         "error": report.toJson()['error'],
       };
-      cachedrequest = CachedRequest(url: _uri, body: Body.fromJson(data));
-      final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
-      if (headers.isNotEmpty == true) {
-        mutableHeaders.addAll(headers);
-      }
-
-      final Options options = Options(
-        sendTimeout: requestTimeout,
-        receiveTimeout: responseTimeout,
-        headers: mutableHeaders,
-      );
-
-      Response? response;
-      {
-        response = await dio.post(_uri, data: data, options: options);
-      }
-      logger.severe("HttpHandler response status: ${response.statusCode!} body: ${response.data!}");
+      final request = CachedRequest(url: _uri, body: Body.fromJson(data));
+      _cacheTheRequest(request);
       return true;
-    } on SocketException catch (e) {
-      _cacheTheRequest(cachedrequest);
-      _printLog("HttpHandler SocketException: $e");
-      return false;
-    } on TimeoutException catch (e) {
-      _cacheTheRequest(cachedrequest);
-      _printLog("HttpHandler TimeoutException: $e");
-      return false;
-    } catch (error, stackTrace) {
-      //TODO: Enable this when debgging is needed
-      // logger.severe("HttpHandler error: $error, stackTrace: $stackTrace");
-      _printLog("HttpHandler error: $error, stackTrace: $stackTrace");
-      return false;
+    } else {
+      try {
+        final profile = await dbService.getProfileDetails();
+
+        final data = {
+          "method": report.toJson()['method'],
+          "pos_profile": profile['name'],
+          "date_time": DateTime.now().toIso8601String(),
+          "error": report.toJson()['error'],
+        };
+
+        final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
+        if (headers.isNotEmpty == true) {
+          mutableHeaders.addAll(headers);
+        }
+
+        final Options options = Options(
+          sendTimeout: requestTimeout,
+          receiveTimeout: responseTimeout,
+          headers: mutableHeaders,
+        );
+
+        Response? response;
+        {
+          response = await dio.post(_uri, data: data, options: options);
+        }
+        logger.severe("HttpHandler response status: ${response.statusCode!} body: ${response.data!}");
+        return true;
+      } on SocketException catch (e) {
+        _printLog("HttpHandler SocketException: $e");
+        return false;
+      } on TimeoutException catch (e) {
+        _printLog("HttpHandler TimeoutException: $e");
+        return false;
+      } catch (error, stackTrace) {
+        //TODO: Enable this when debgging is needed
+        // logger.severe("HttpHandler error: $error, stackTrace: $stackTrace");
+        _printLog("HttpHandler error: $error, stackTrace: $stackTrace");
+        return false;
+      }
     }
   }
 
