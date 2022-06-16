@@ -21,6 +21,7 @@ dependencies:
   shared_preferences: ^2.0.15
   get_storage:
   connectivity_plus:
+    
 dev_dependencies:
   flutter_test:
     sdk: flutter

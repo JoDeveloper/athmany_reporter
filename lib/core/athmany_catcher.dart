@@ -28,6 +28,7 @@ class AthmanyCatcher with ReportModeAction {
   final Database database;
 
   late DBService _dbService;
+
   late Dio dio;
 
   ///Run app function which will be ran
@@ -70,7 +71,7 @@ class AthmanyCatcher with ReportModeAction {
     this.releaseConfig,
     this.debugConfig,
     this.profileConfig,
-    this.enableLogger = true,
+    this.enableLogger = false,
     this.ensureInitialized = false,
     GlobalKey<NavigatorState>? navigatorKey,
   }) : assert(
@@ -119,7 +120,7 @@ class AthmanyCatcher with ReportModeAction {
     _currentConfig = CatcherOptions(
       SilentReportMode(),
       [
-        ConsoleHandler(),
+        if (enableLogger) ConsoleHandler(),
         HttpHandler(
           HttpRequestType.post,
           dio,
