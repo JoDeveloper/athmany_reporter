@@ -66,7 +66,7 @@ class HttpHandler extends ReportHandler {
         "method": report.toJson()['method'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
-        "error": report.toJson()['error'],
+        "error": report.toJson()['stackTrace'],
       };
       final request = CachedRequest(url: _uri, body: Body.fromJson(data));
       _cacheTheRequest(request);
@@ -79,7 +79,7 @@ class HttpHandler extends ReportHandler {
           "method": report.toJson()['method'],
           "pos_profile": profile['name'],
           "date_time": DateTime.now().toIso8601String(),
-          "error": report.toJson()['error'],
+          "error": report.toJson()['stackTrace'],
         };
 
         final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
@@ -106,8 +106,6 @@ class HttpHandler extends ReportHandler {
         _printLog("HttpHandler TimeoutException: $e");
         return false;
       } catch (error, stackTrace) {
-        //TODO: Enable this when debgging is needed
-        // logger.severe("HttpHandler error: $error, stackTrace: $stackTrace");
         _printLog("HttpHandler error: $error, stackTrace: $stackTrace");
         return false;
       }
