@@ -17,11 +17,11 @@ class CustomTrace {
   }
 
   String _getFunctionNameFromFrame(String frame) {
-    var currentTrace = frame;
+    String currentTrace = frame;
 
-    var indexOfWhiteSpace = currentTrace.indexOf(' ');
+    int indexOfWhiteSpace = currentTrace.indexOf(' ');
 
-    var subStr = currentTrace.substring(indexOfWhiteSpace);
+    String subStr = currentTrace.substring(indexOfWhiteSpace);
 
     final indexOfFunction = subStr.indexOf(RegExp(r'[A-Za-z0-9]'));
 
@@ -35,15 +35,15 @@ class CustomTrace {
   }
 
   void _parseTrace() {
-    var frames = stack.toString().split("\n");
+    List<String> frames = stack.toString().split("\n");
 
     functionName = _getFunctionNameFromFrame(frames[0]);
 
     callerFunctionName = _getFunctionNameFromFrame(frames[1]);
 
-    var traceString = frames[0];
+    String traceString = frames[0];
 
-    var indexOfFileName = traceString.indexOf(RegExp(r'[A-Za-z]+.dart'));
+    int indexOfFileName = traceString.indexOf(RegExp(r'[A-Za-z]+.dart'));
 
     var fileInfo = traceString.substring(indexOfFileName);
 
