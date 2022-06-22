@@ -45,13 +45,13 @@ class CustomTrace {
 
     int indexOfFileName = traceString.indexOf(RegExp(r'[A-Za-z]+.dart'));
 
-    var fileInfo = traceString.substring(indexOfFileName);
+    String fileInfo = traceString.substring(indexOfFileName);
 
-    var listOfInfos = fileInfo.split(":");
+    List<String> listOfInfos = fileInfo.split(":");
 
     fileName = listOfInfos[0];
     lineNumber = int.parse(listOfInfos[1]);
-    var columnStr = listOfInfos[2];
+    String columnStr = listOfInfos[2];
     columnStr = columnStr.replaceFirst(")", "");
     columnNumber = int.parse(columnStr);
   }
@@ -73,7 +73,7 @@ class CustomTrace {
     String result = "";
     String traceStr = trace.toString();
     List<String> strs = traceStr.split("\n");
-    for (var str in strs) {
+    for (String str in strs) {
       if (!str.contains("package:flutter/") && !str.contains("dart:") && !str.contains("package:flutter_stack_trace/")) {
         if (str.isNotEmpty) {
           if (result.isNotEmpty) {
@@ -103,7 +103,7 @@ class CustomTrace {
             objSlice.add(obj.toString().substring(maxLength * i, maxLength * (i + 1) > obj.toString().length ? obj.toString().length : maxLength * (i + 1)));
           }
           slice = "\n";
-          for (var element in objSlice) {
+          for (String element in objSlice) {
             slice += "$element\n";
           }
         }
@@ -115,14 +115,14 @@ class CustomTrace {
   _print(String content, {bool isShowTime = true, bool showLine = false}) {
     String log = isShowTime ? "${DateTime.now()}:  $content" : content;
     if (showLine) {
-      var logSlice = log.split("\n");
+      List<String> logSlice = log.split("\n");
       int maxLength = _getMaxLength(logSlice) + 3;
       String line = "-";
       for (int i = 0; i < maxLength + 1; i++) {
         line = "$line-";
       }
       debugPrint(line);
-      for (var log in logSlice) {
+      for (String log in logSlice) {
         if (log.isEmpty) {
           continue;
         }
@@ -143,7 +143,7 @@ class CustomTrace {
 
   int _getMaxLength(List<String> logSlice) {
     List<int> lengthList = <int>[];
-    for (var log in logSlice) {
+    for (String log in logSlice) {
       lengthList.add(log.length);
     }
     lengthList.sort((left, right) => right - left);
