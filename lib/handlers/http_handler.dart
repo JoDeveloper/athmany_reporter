@@ -63,7 +63,7 @@ class HttpHandler extends ReportHandler {
       final profile = await dbService.getProfileDetails();
 
       final data = {
-        "method": report.toJson()['method'],
+        "method": report.toJson()['method'] ?? report.toJson()['stackTrace'][0] ,
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
         "error": report.toJson()['stackTrace'],
@@ -76,7 +76,7 @@ class HttpHandler extends ReportHandler {
         final profile = await dbService.getProfileDetails();
 
         final data = {
-          "method": report.toJson()['method'],
+          "method": report.toJson()['method'] ?? report.toJson()['stackTrace'][0],
           "pos_profile": profile['name'],
           "date_time": DateTime.now().toIso8601String(),
           "error": report.toJson()['stackTrace'],

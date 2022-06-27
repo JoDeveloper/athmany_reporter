@@ -34,7 +34,7 @@ class ConsoleHandler extends ReportHandler {
       logger.info("");
     }
     logger.info("---------- 😡 ERROR 😡 ----------");
-    logger.info(error.functionNameWithCaller);
+    logger.info(error.error.toString());
     logger.info("");
     if (enableStackTrace) {
       logger.info("-------👿 STACK TRACE 👿-------");
