@@ -1,5 +1,6 @@
 import 'package:catcher/model/platform_type.dart';
 import 'package:flutter/foundation.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 class Report {
   /// Error that has been caught
@@ -45,11 +46,14 @@ class Report {
     bool enableStackTrace = true,
     bool enableCustomParameters = false,
   }) {
+    final trace = Trace.from(stackTrace);
+
     final Map<String, dynamic> json = <String, dynamic>{
-      "error": stackTrace.toString(),
+      "error": Trace.format(stackTrace),
       "customParameters": customParameters,
       "dateTime": dateTime.toIso8601String(),
       "platformType": describeEnum(platformType),
+      "method": trace.frames[0].member,
     };
     if (enableDeviceParameters) {
       json["deviceParameters"] = deviceParameters;
@@ -59,7 +63,6 @@ class Report {
     }
     if (enableStackTrace) {
       json["stackTrace"] = stackTrace.toString();
-      json['method'] = customParameters['method'];
     }
     if (enableCustomParameters) {
       json["customParameters"] = customParameters;

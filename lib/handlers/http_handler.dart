@@ -63,10 +63,10 @@ class HttpHandler extends ReportHandler {
       final profile = await dbService.getProfileDetails();
 
       final data = {
-        "method": report.toJson()['method'] ?? report.toJson()['stackTrace'][0] ,
+        "method": report.toJson()['method'],
         "pos_profile": profile['name'],
         "date_time": DateTime.now().toIso8601String(),
-        "error": report.toJson()['stackTrace'],
+        "error": report.toJson()['error'],
       };
       final request = CachedRequest(url: _uri, body: Body.fromJson(data));
       _cacheTheRequest(request);
@@ -76,10 +76,10 @@ class HttpHandler extends ReportHandler {
         final profile = await dbService.getProfileDetails();
 
         final data = {
-          "method": report.toJson()['method'] ?? report.toJson()['stackTrace'][0],
+          "method": report.toJson()['method'],
           "pos_profile": profile['name'],
           "date_time": DateTime.now().toIso8601String(),
-          "error": report.toJson()['stackTrace'],
+          "error": report.toJson()['error'],
         };
 
         final HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
