@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 import '../model/cached_request.dart';
 import 'db_service.dart';
@@ -186,7 +187,9 @@ class AthmanyCatcher with ReportModeAction {
       });
     } else if (runAppFunction != null) {
       _runZonedGuarded(() {
-        runAppFunction!();
+        Chain.capture(() {
+          runAppFunction!();
+        });
       });
     } else {
       throw ArgumentError("Provide rootWidget or runAppFunction to Catcher.");
