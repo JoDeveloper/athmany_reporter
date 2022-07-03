@@ -178,6 +178,7 @@ class AthmanyCatcher with ReportModeAction {
 
   Future _setupErrorHooks() async {
     FlutterError.onError = (FlutterErrorDetails details) async {
+      Zone.current.handleUncaughtError(details.exception, details.stack!);
       _reportError(details.exception, details.stack, errorDetails: details);
     };
 
